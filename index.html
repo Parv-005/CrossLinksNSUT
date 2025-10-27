@@ -1,423 +1,621 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Events — Scroll Carousel Demo</title>
-
-  <!-- Tailwind quick CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- GSAP core + plugins -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-
-  <!-- SplitType for elegant text reveals -->
-  <script src="https://unpkg.com/split-type"></script>
-
-  <style>
-    :root{
-      --accent: #60a5fa;
-      --muted: #6b7280;
-    }
-    html,body{height:100%}
-    body{
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: #fbfbfd;
-      color: #0f172a;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x: hidden;
-    }
-
-    /* Global helpers */
-    section { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:4rem 1.25rem; }
-    .container { max-width:1200px; width:100%; margin:0 auto; }
-
-    /* Hero / simple */
-    .hero-title { font-weight:800; line-height:0.95; font-size:clamp(2.2rem, 6vw, 4rem); }
-    .btn { transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s ease; }
-    .btn:hover{ transform:translateY(-4px); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
-
-    /* Carousel specific */
-    #events { position:relative; padding:0; height:100vh; overflow:hidden; background:linear-gradient(180deg,#fbfbfd,#f6f9ff); }
-    #events .section-title { position:absolute; top:40px; left:50%; transform:translateX(-50%); z-index:30; text-align:center; }
-    #carousel-wrapper{ position:relative; width:100%; height:100%; overflow:hidden; }
-    #carousel{ position:absolute; top:50%; left:0; transform:translateY(-50%); display:flex; align-items:center; gap: clamp(20px, 4vw, 48px); will-change: transform; padding: 0 8vw; }
-    .carousel-item { position:relative; border-radius:18px; overflow:hidden; box-shadow: 0 14px 40px rgba(16,24,40,0.08); flex-shrink:0; display:block; cursor:pointer; }
-    .carousel-item img{ display:block; width:100%; height:100%; object-fit:cover; vertical-align:middle; }
-
-    /* Overlay for hover effect */
-.carousel-item .overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 100%);
-  color: #fff;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 1.4rem;
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-}
-
-.carousel-item .overlay-content {
-  text-align: center;
-  opacity: 0;
-  transform: translateY(15px);
-  transition: all 0.3s ease;
-}
-
-.carousel-item .overlay h4 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
-
-.carousel-item .overlay p {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.85);
-}
-
-
-    /* We will set width/height/top via inline styles or data attributes for variety */
-    .carousel-item .meta { position:absolute; left:18px; bottom:14px; color: #fff; text-shadow:0 6px 18px rgba(2,6,23,.45); font-weight:600; font-size:0.95rem; }
-
-    /* subtle hover */
-    .carousel-item:hover{ transform: translateY(-6px) scale(1.02); transition: transform .35s cubic-bezier(.2,.9,.3,1); z-index:50; }
-
-    /* other sections */
-    .simple-card{ background:#fff; border-radius:14px; padding:1.6rem; box-shadow: 0 8px 30px rgba(16,24,40,.04); }
-
-    /* responsive */
-    @media (max-width:768px){
-      #carousel{ padding: 0 6vw; gap:18px; }
-      .carousel-item { border-radius:12px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Official website inspired by Lando Norris and McLaren Formula 1. Explore our events, gallery, and team.">
+    <meta name="keywords" content="McLaren, Lando Norris, Formula 1, events, gallery, team">
+    <meta name="author" content="Your Organization">
+    <link rel="icon" type="image/png" href="https://via.placeholder.com/32x32?text=Icon">
+    <title>Premium Dark Website</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <!-- lightGallery -->
+    <link href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lightgallery.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.min.js"></script>
+    <!-- Vanilla Tilt -->
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+    <style>
+        /* Custom styles for gradients, particles, etc. */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+        }
+        .animate-gradient {
+            background: linear-gradient(45deg, #0d0d0f, #121212);
+            background-size: 200% 200%;
+            animation: gradientMove 10s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.15);
+            filter: blur(2px);
+            animation: float 20s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4f46e5;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            z-index: 9999;
+        }
+        #cursor.enlarge {
+            width: 40px;
+            height: 40px;
+        }
+        .overlay {
+            background: linear-gradient(to bottom, transparent, rgba(79, 70, 229, 0.5));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .event-item:hover .overlay {
+            opacity: 1;
+        }
+        /* Hero Word-by-Word Animation */
+        #hero h1 .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        /* Gallery Section Enhancements */
+        #gallery .gallery-item {
+            transition: transform 0.5s ease, box-shadow 0.3s ease;
+        }
+        #gallery .gallery-item:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+        #gallery .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+        #gallery .gallery-item img {
+            border-radius: 8px;
+        }
+        #gallery .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(79, 70, 229, 0.2);
+            pointer-events: none;
+        }
+        /* Lightbox Custom Styling */
+        .lg-custom .lg-outer {
+            background: rgba(13, 13, 15, 0.95);
+        }
+        .lg-custom .lg-img-wrap, .lg-custom .lg-image {
+            border-radius: 8px;
+        }
+        .lg-custom .lg-sub-html {
+            color: #f5f5f7;
+            background: rgba(79, 70, 229, 0.3);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        .lg-custom .lg-toolbar,
+        .lg-custom .lg-prev,
+        .lg-custom .lg-next {
+            color: #f5f5f7;
+        }
+        .lg-custom .lg-prev:hover,
+        .lg-custom .lg-next:hover {
+            color: #4f46e5;
+        }
+        /* Events Section Enhancements */
+        .event-item img {
+            max-width: 600px; /* Limits max width for consistency */
+            max-height: 450px; /* Limits max height for consistency */
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.3); /* Subtle glow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-item:hover img {
+            transform: scale(1.05); /* Slight scale on hover */
+            box-shadow: 0 0 25px rgba(79, 70, 229, 0.5);
+        }
+        .event-item .overlay {
+            border-radius: 8px; /* Matches image border-radius */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #scroll-progress { display: none; }
+            .events-container { width: 100vw; }
+            .event-item { width: 100vw; }
+            .event-item img {
+                max-width: 90%; /* Ensures images fit on smaller screens */
+                max-height: 300px;
+            }
+            .event-item .overlay p {
+                font-size: 1rem; /* Smaller text on mobile */
+            }
+            #gallery .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body>
-
-  <!-- NAV -->
-  <header class="fixed top-0 left-0 w-full z-50">
-    <div class="container flex items-center justify-between py-4 px-4">
-      <div class="font-bold text-xl">LOGO</div>
-      <nav class="hidden md:flex gap-6 text-sm text-slate-700">
-        <a href="#about" class="hover:text-black">About</a>
-        <a href="#events" class="hover:text-black">Events</a>
-        <a href="#gallery" class="hover:text-black">Gallery</a>
-        <a href="#team" class="hover:text-black">Team</a>
-      </nav>
+<body class="bg-[#0d0d0f] text-[#f5f5f7]">
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 bg-[#0d0d0f] flex flex-col items-center justify-center z-50">
+        <img src="" alt="Logo" class="mb-4">
+        <div class="w-64 h-2 bg-[#121212] rounded-full overflow-hidden">
+            <div id="progress" class="h-full bg-[#4f46e5] w-0"></div>
+        </div>
     </div>
-  </header>
 
-  <main>
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-[#4f46e5] z-50" style="width: 0;"></div>
 
-    <!-- HERO -->
-    <section id="hero" class="bg-white pt-24">
-      <div class="container text-center">
-        <h1 class="hero-title reveal-text">Welcome to Our Event</h1>
-        <p class="mt-6 text-slate-600 max-w-2xl mx-auto reveal-text">We create moments for builders, thinkers and makers — events filled with energy, craft and collaboration.</p>
-        <div class="mt-8 flex items-center justify-center gap-4">
-          <a href="#events" class="btn px-6 py-3 rounded-full bg-[var(--accent)] text-white">See Events</a>
-          <a href="#about" class="btn px-5 py-3 rounded-full border">About</a>
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-[#121212]/80 backdrop-blur-md">
+        <div class="container mx-auto flex justify-between items-center py-4 px-6">
+            <img src="/images/logo.png" alt="Logo" class="h-8">
+            <div class="hidden md:flex space-x-6">
+                <a href="#hero" class="text-[#f5f5f7] hover:text-[#4f46e5] transition-colors">Home</a>
+                <a href="#about" class="text-[#f5f5f7] hover:text-[#4f46e5] transition-colors">About</a>
+                <a href="#events" class="text-[#f5f5f7] hover:text-[#4f46e5] transition-colors">Events</a>
+                <a href="#gallery" class="text-[#f5f5f7] hover:text-[#4f46e5] transition-colors">Gallery</a>
+                <a href="#team" class="text-[#f5f5f7] hover:text-[#4f46e5] transition-colors">Team</a>
+                <a href="#contact" class="text-[#4f46e5] border border-[#4f46e5] px-4 py-2 rounded hover:bg-[#4f46e5] hover:text-[#f5f5f7] transition-all">Contact</a>
+            </div>
+            <!-- Hamburger Menu for Mobile -->
+            <button id="hamburger" class="md:hidden text-[#f5f5f7] focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-[#121212] text-center">
+                <a href="#hero" class="py-2 text-[#f5f5f7] hover:text-[#4f46e5]">Home</a>
+                <a href="#about" class="py-2 text-[#f5f5f7] hover:text-[#4f46e5]">About</a>
+                <a href="#events" class="py-2 text-[#f5f5f7] hover:text-[#4f46e5]">Events</a>
+                <a href="#gallery" class="py-2 text-[#f5f5f7] hover:text-[#4f46e5]">Gallery</a>
+                <a href="#team" class="py-2 text-[#f5f5f7] hover:text-[#4f46e5]">Team</a>
+                <a href="#contact" class="py-2 text-[#4f46e5] border-t border-[#4f46e5]">Contact</a>
+            </div>
         </div>
-      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen flex flex-col justify-center items-center overflow-hidden">
+        <div class="absolute inset-0 animate-gradient z-[-2]"></div>
+        <div id="particles" class="absolute inset-0 z-[-1]"></div>
+        <img src="https://via.placeholder.com/200x100?text=Logo" alt="Logo" class="mb-4 z-10" loading="lazy">
+        <!-- <h1 class="text-6xl font-bold text-center z-10">
+            <span class="word">Welcome</span>
+            <span class="word">to</span>
+            <span class="word">Our</span>
+            <span class="word">World</span>
+        </h1>
+        <p class="text-xl mt-4 z-10">Inspired by Speed and Precision</p> -->
     </section>
 
-    <!-- ABOUT (keeps simple) -->
-    <section id="about">
-      <div class="container text-center">
-        <div class="simple-card mx-auto max-w-3xl">
-          <h2 class="text-2xl font-semibold mb-3 reveal-text">About Us</h2>
-          <p class="text-slate-600 reveal-text">We run hackathons, sprints and showcases that focus on building and learning. Join our community to collaborate and grow.</p>
+    <!-- About Section -->
+    <section id="about" class="min-h-screen flex items-center bg-gradient-to-b from-[#0d0d0f] to-[#121212]">
+        <div class="container mx-auto flex flex-col md:flex-row items-center">
+            <div class="w-full md:w-1/2 p-8 relative">
+                <img src="https://via.placeholder.com/600x800?text=About+Image" alt="About Image" class="w-full parallax-layer" loading="lazy">
+            </div>
+            <div class="w-full md:w-1/2 p-8">
+                <h2 class="text-4xl font-bold mb-4">About Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
         </div>
-      </div>
     </section>
 
-<!-- EVENTS: full-screen, pinned horizontal staggered carousel -->
-<section id="events" aria-label="Events">
-  <div class="section-title">
-    <h3 class="text-xl font-semibold reveal-text">Our Events</h3>
-    <p class="text-slate-600 reveal-text">Scroll to explore — hover to know more</p>
-  </div>
-
-  <div id="carousel-wrapper">
-    <div id="carousel" role="list">
-      
-      <a class="carousel-item group" role="listitem" href="#" 
-         data-w="42vw" data-h="78%" data-top="0" aria-label="Event 1">
-        <img loading="lazy" src="images/farewell.jpg" alt="FareWell Image">
-        <div class="meta">FAREWELL</div>
-        <div class="overlay">
-          <div class="overlay-content">
-            <h4>Farewell 2024</h4>
-            <p>A thrilling event filled with innovation and adrenaline on the track.</p>
-          </div>
+    <!-- Events Section (Horizontal Scroll with Smaller Images) -->
+    <section id="events" class="min-h-screen relative">
+        <div class="container mx-auto py-8">
+            <h2 class="text-4xl font-bold mb-8 text-center">Events</h2>
         </div>
-      </a>
-
-      <a class="carousel-item group" role="listitem" href="#" 
-         data-w="36vw" data-h="66%" data-top="28" aria-label="Event 2">
-        <img loading="lazy" src="images/event2.jpg" alt="Event 2 image">
-        <div class="meta">MONACO, 2023</div>
-        <div class="overlay">
-          <div class="overlay-content">
-            <h4>Monaco 2023</h4>
-            <p>An unforgettable moment by the sea — elegance meets performance.</p>
-          </div>
+        <div class="events-container flex whitespace-nowrap pin-section" style="width: 300vw;">
+            <div class="event-item inline-block w-screen h-screen relative flex items-center justify-center" style="transform: translateY(10%);">
+                <img src="https://via.placeholder.com/800x600?text=Event+1" alt="Event 1" class="w-1/2 h-1/2 object-cover rounded-lg" loading="lazy">
+                <div class="overlay absolute inset-0 flex items-end justify-center pb-8 text-center">
+                    <p class="text-xl text-[#f5f5f7] font-semibold">Event 1 Description</p>
+                </div>
+            </div>
+            <div class="event-item inline-block w-screen h-screen relative flex items-center justify-center" style="transform: translateY(-10%);">
+                <img src="https://via.placeholder.com/800x600?text=Event+2" alt="Event 2" class="w-1/2 h-1/2 object-cover rounded-lg" loading="lazy">
+                <div class="overlay absolute inset-0 flex items-end justify-center pb-8 text-center">
+                    <p class="text-xl text-[#f5f5f7] font-semibold">Event 2 Description</p>
+                </div>
+            </div>
+            <div class="event-item inline-block w-screen h-screen relative flex items-center justify-center" style="transform: translateY(10%);">
+                <img src="https://via.placeholder.com/800x600?text=Event+3" alt="Event 3" class="w-1/2 h-1/2 object-cover rounded-lg" loading="lazy">
+                <div class="overlay absolute inset-0 flex items-end justify-center pb-8 text-center">
+                    <p class="text-xl text-[#f5f5f7] font-semibold">Event 3 Description</p>
+                </div>
+            </div>
         </div>
-      </a>
-
-      <a class="carousel-item group" role="listitem" href="#" 
-         data-w="46vw" data-h="84%" data-top="-36" aria-label="Event 3">
-        <img loading="lazy" src="images/event3.jpg" alt="Event 3 image">
-        <div class="meta">BRITAIN, 2025</div>
-        <div class="overlay">
-          <div class="overlay-content">
-            <h4>Britain 2025</h4>
-            <p>Where history and innovation collide to create magic on track.</p>
-          </div>
-        </div>
-      </a>
-
-      <a class="carousel-item group" role="listitem" href="#" 
-         data-w="34vw" data-h="70%" data-top="44" aria-label="Event 4">
-        <img loading="lazy" src="images/event4.jpg" alt="Event 4 image">
-        <div class="meta">FIA PRIZE GIVING</div>
-        <div class="overlay">
-          <div class="overlay-content">
-            <h4>FIA Awards Night</h4>
-            <p>Celebrating excellence and dedication in motorsport achievements.</p>
-          </div>
-        </div>
-      </a>
-
-      <a class="carousel-item group" role="listitem" href="#" 
-         data-w="40vw" data-h="76%" data-top="-18" aria-label="Event 5">
-        <img loading="lazy" src="images/event5.jpg" alt="Event 5 image">
-        <div class="meta">CLOSING NIGHT</div>
-        <div class="overlay">
-          <div class="overlay-content">
-            <h4>Closing Night</h4>
-            <p>A night to remember — stories, lights, and celebration of success.</p>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </div>
-</section>
-
-
-    <!-- GALLERY -->
-    <section id="gallery">
-      <div class="container text-center">
-        <h3 class="text-2xl font-semibold reveal-text">Gallery</h3>
-        <p class="text-slate-600 reveal-text">A few moments from our events</p>
-
-        <div class="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
-          <img src="images/gallery1.jpg" loading="lazy" alt="gallery 1" class="rounded-xl shadow" />
-          <img src="images/gallery2.jpg" loading="lazy" alt="gallery 2" class="rounded-xl shadow" />
-          <img src="images/gallery3.jpg" loading="lazy" alt="gallery 3" class="rounded-xl shadow" />
-        </div>
-      </div>
     </section>
 
-    <!-- TEAM -->
-    <section id="team" class="bg-white">
-      <div class="container text-center">
-        <h3 class="text-2xl font-semibold reveal-text">Team</h3>
-        <p class="text-slate-600 reveal-text">Meet our organizers</p>
-
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="simple-card text-center">
-            <img src="images/team1.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
-            <div class="font-semibold">Aarav Sharma</div>
-            <div class="text-sm text-slate-500">Lead Organizer</div>
-          </div>
-          <div class="simple-card text-center">
-            <img src="images/team2.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
-            <div class="font-semibold">Priya Verma</div>
-            <div class="text-sm text-slate-500">Design Head</div>
-          </div>
-          <div class="simple-card text-center">
-            <img src="images/team3.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
-            <div class="font-semibold">Rohan Gupta</div>
-            <div class="text-sm text-slate-500">Tech Lead</div>
-          </div>
+    <!-- Gallery Section (Masonry Grid with Lightbox) -->
+    <section id="gallery" class="min-h-screen py-12 bg-gradient-to-b from-[#121212] to-[#0d0d0f]">
+        <div class="container mx-auto px-4">
+            <h2 class="text-5xl font-bold mb-12 text-center text-[#f5f5f7] tracking-tight">Gallery</h2>
+            <div id="lightgallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <a href="https://via.placeholder.com/400x600?text=Gallery+1" class="gallery-item relative block overflow-hidden rounded-lg" data-sub-html="Gallery Image 1 Caption">
+                    <img src="https://via.placeholder.com/400x600?text=Gallery+1" alt="Gallery Image 1" class="w-full h-full object-cover transform transition-transform duration-500" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-gradient-to-b from-transparent to-[#4f46e5]/50 opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <p class="text-[#f5f5f7] text-lg font-semibold">Image 1</p>
+                    </div>
+                </a>
+                <a href="https://via.placeholder.com/400x300?text=Gallery+2" class="gallery-item relative block overflow-hidden rounded-lg" data-sub-html="Gallery Image 2 Caption">
+                    <img src="https://via.placeholder.com/400x300?text=Gallery+2" alt="Gallery Image 2" class="w-full h-full object-cover transform transition-transform duration-500" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-gradient-to-b from-transparent to-[#4f46e5]/50 opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <p class="text-[#f5f5f7] text-lg font-semibold">Image 2</p>
+                    </div>
+                </a>
+                <a href="https://via.placeholder.com/400x500?text=Gallery+3" class="gallery-item relative block overflow-hidden rounded-lg" data-sub-html="Gallery Image 3 Caption">
+                    <img src="https://via.placeholder.com/400x500?text=Gallery+3" alt="Gallery Image 3" class="w-full h-full object-cover transform transition-transform duration-500" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-gradient-to-b from-transparent to-[#4f46e5]/50 opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <p class="text-[#f5f5f7] text-lg font-semibold">Image 3</p>
+                    </div>
+                </a>
+                <a href="https://via.placeholder.com/400x400?text=Gallery+4" class="gallery-item relative block overflow-hidden rounded-lg" data-sub-html="Gallery Image 4 Caption">
+                    <img src="https://via.placeholder.com/400x400?text=Gallery+4" alt="Gallery Image 4" class="w-full h-full object-cover transform transition-transform duration-500" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-gradient-to-b from-transparent to-[#4f46e5]/50 opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <p class="text-[#f5f5f7] text-lg font-semibold">Image 4</p>
+                    </div>
+                </a>
+                <a href="https://via.placeholder.com/400x700?text=Gallery+5" class="gallery-item relative block overflow-hidden rounded-lg" data-sub-html="Gallery Image 5 Caption">
+                    <img src="https://via.placeholder.com/400x700?text=Gallery+5" alt="Gallery Image 5" class="w-full h-full object-cover transform transition-transform duration-500" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-gradient-to-b from-transparent to-[#4f46e5]/50 opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <p class="text-[#f5f5f7] text-lg font-semibold">Image 5</p>
+                    </div>
+                </a>
+            </div>
         </div>
-      </div>
     </section>
 
-    <footer class="py-8 text-center text-sm text-slate-500">
-      © 2025 Your Organization. All rights reserved.
+    <!-- Team Section -->
+    <section id="team" class="min-h-screen flex items-center justify-center bg-[#0d0d0f]">
+        <div class="container mx-auto py-8">
+            <h2 class="text-4xl font-bold mb-8 text-center">Team Members</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="team-card bg-[#121212] p-6 rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:scale-105 transition-all duration-300">
+                    <img src="https://via.placeholder.com/300x300?text=Member+1" alt="Member 1" class="w-full mb-4 rounded" loading="lazy">
+                    <h3 class="text-2xl font-bold">Member 1</h3>
+                    <p>Role Description</p>
+                </div>
+                <div class="team-card bg-[#121212] p-6 rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:scale-105 transition-all duration-300">
+                    <img src="https://via.placeholder.com/300x300?text=Member+2" alt="Member 2" class="w-full mb-4 rounded" loading="lazy">
+                    <h3 class="text-2xl font-bold">Member 2</h3>
+                    <p>Role Description</p>
+                </div>
+                <div class="team-card bg-[#121212] p-6 rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:scale-105 transition-all duration-300">
+                    <img src="https://via.placeholder.com/300x300?text=Member+3" alt="Member 3" class="w-full mb-4 rounded" loading="lazy">
+                    <h3 class="text-2xl font-bold">Member 3</h3>
+                    <p>Role Description</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="min-h-screen flex items-center bg-gradient-to-b from-[#0d0d0f] to-[#121212]">
+        <div class="container mx-auto py-8">
+            <h2 class="text-4xl font-bold mb-8 text-center">Contact Us</h2>
+            <form id="contact-form" class="max-w-lg mx-auto space-y-6">
+                <div class="relative">
+                    <input type="text" id="name" class="w-full bg-[#121212] border border-[#4f46e5] p-4 rounded focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-[#f5f5f7]" required>
+                    <label for="name" class="absolute left-4 top-4 text-[#f5f5f7] transition-all duration-300">Name</label>
+                </div>
+                <div class="relative">
+                    <input type="email" id="email" class="w-full bg-[#121212] border border-[#4f46e5] p-4 rounded focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-[#f5f5f7]" required>
+                    <label for="email" class="absolute left-4 top-4 text-[#f5f5f7] transition-all duration-300">Email</label>
+                </div>
+                <div class="relative">
+                    <textarea id="message" class="w-full bg-[#121212] border border-[#4f46e5] p-4 rounded focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-[#f5f5f7]" rows="4" required></textarea>
+                    <label for="message" class="absolute left-4 top-4 text-[#f5f5f7] transition-all duration-300">Message</label>
+                </div>
+                <button type="submit" class="w-full bg-[#4f46e5] text-[#f5f5f7] py-3 rounded hover:bg-[#3b3aaf] transition-colors">Send Message</button>
+            </form>
+            <p id="form-message" class="text-center mt-4 hidden text-[#4f46e5]"></p>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="min-h-[50vh] py-8 bg-[#0d0d0f]">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-8 text-center">What People Say</h2>
+            <div class="testimonials-carousel flex space-x-8 overflow-hidden">
+                <div class="testimonial min-w-[300px] bg-[#121212] p-6 rounded-lg shadow-lg">
+                    <p class="text-[#f5f5f7]">"Amazing experience! The events are top-notch."</p>
+                    <p class="text-[#4f46e5] mt-2">– John Doe</p>
+                </div>
+                <div class="testimonial min-w-[300px] bg-[#121212] p-6 rounded-lg shadow-lg">
+                    <p class="text-[#f5f5f7]">"The team is incredibly talented and professional."</p>
+                    <p class="text-[#4f46e5] mt-2">– Jane Smith</p>
+                </div>
+                <div class="testimonial min-w-[300px] bg-[#121212] p-6 rounded-lg shadow-lg">
+                    <p class="text-[#f5f5f7]">"A visually stunning and immersive site!"</p>
+                    <p class="text-[#4f46e5] mt-2">– Alex Brown</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-center bg-[#121212]">
+        <img src="https://via.placeholder.com/100x50?text=Logo" alt="Logo" class="mx-auto mb-4">
+        <div class="flex justify-center space-x-4">
+            <a href="#" class="text-[#4f46e5]">Social 1</a>
+            <a href="#" class="text-[#4f46e5]">Social 2</a>
+            <a href="#" class="text-[#4f46e5]">Social 3</a>
+        </div>
     </footer>
 
-  </main>
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
 
-  <!-- ---------- Scripts (animations) ---------- -->
-  <script>
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-    // Utility: reveal text using SplitType
-    function initTextReveals(){
-      document.querySelectorAll('.reveal-text').forEach(el => {
-        // avoid re-splitting if already split
-        if (!el.dataset.split) {
-          const split = new SplitType(el, { types: 'lines, words' });
-          el.dataset.split = '1';
-          gsap.from(split.lines, {
-            yPercent: 100, opacity: 0, stagger: 0.08, duration: 0.95, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-          });
-        }
-      });
-    }
-
-    // Fade-up generic elements
-    function initFadeUps(){
-      gsap.utils.toArray('.simple-card, #gallery img, .hero-title, .btn').forEach(el => {
-        gsap.fromTo(el, { y: 30, opacity: 0 }, {
-          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+    <script>
+        // Lenis Smooth Scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true
         });
-      });
-    }
-
-    // Carousel: compute sizes and apply initial inline styles from data attributes
-    function setupCarouselItems(){
-      const items = document.querySelectorAll('.carousel-item');
-      items.forEach(it => {
-        const w = it.dataset.w || '40vw';
-        const h = it.dataset.h || '76%';
-        const top = it.dataset.top || '0'; // px
-        it.style.width = w;
-        it.style.height = h;
-        it.style.top = (top + 'px');
-        // allow absolute overlap by making parent relative; position items relative and allow translate on hover
-        it.style.position = 'relative';
-        it.style.transition = 'transform .35s cubic-bezier(.2,.9,.3,1), z-index .1s';
-      });
-    }
-
-    // Main carousel scroll-driven animation
-    function initCarousel(){
-      const carousel = document.getElementById('carousel');
-      const wrapper = document.getElementById('carousel-wrapper');
-
-      // ensure layout updated
-      setupCarouselItems();
-      // compute full scroll width
-      let totalWidth = Math.max(0, carousel.scrollWidth - wrapper.clientWidth);
-
-      // For dynamic content or resizes, refresh
-      ScrollTrigger.addEventListener('refreshInit', () => {
-        totalWidth = Math.max(0, carousel.scrollWidth - wrapper.clientWidth);
-      });
-
-      // main horizontal move: pin the #events section and move carousel by -totalWidth
-      gsap.to(carousel, {
-        x: () => `-${totalWidth}px`,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '#events',
-          start: 'top top',
-          end: () => "+=" + (totalWidth + window.innerHeight * 0.6), // extended so scroll feels smooth
-          scrub: 1,
-          pin: true,
-          anticipatePin: 0.5,
-          invalidateOnRefresh: true
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
         }
-      });
+        requestAnimationFrame(raf);
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
 
-      // Depth effect: scale/rotate slightly depending on relative progress
-      const items = gsap.utils.toArray('.carousel-item');
-      items.forEach((el, i) => {
-        // we animate scale and slight rotate (more subtle)
-        gsap.to(el, {
-          scale: 1.02,
-          rotation: (i % 2 === 0) ? 0.3 : -0.3,
-          ease: 'sine.out',
-          scrollTrigger: {
-            trigger: '#events',
-            start: 'top top',
-            end: () => "+=" + (totalWidth + window.innerHeight * 0.6),
-            scrub: true
-          }
+        // Debugging Hero Animation
+        if (!document.querySelector('#hero h1')) console.error('Hero h1 not found');
+        if (!document.querySelector('#hero p')) console.error('Hero p not found');
+
+        // Preloader Animation
+        window.addEventListener('load', () => {
+            gsap.to('#progress', { width: '100%', duration: 1.5, ease: 'power2.out' });
+            gsap.to('#preloader', { 
+                opacity: 0, 
+                duration: 0.5, 
+                delay: 1.5, 
+                onComplete: () => {
+                    document.getElementById('preloader').style.display = 'none';
+                    // Hero text animations
+                    gsap.to('#hero h1 .word', { 
+                        opacity: 1, 
+                        y: 0, 
+                        duration: 0.8, 
+                        stagger: 0.2, 
+                        ease: 'power3.out',
+                        delay: 0.2 
+                    });
+                    gsap.fromTo('#hero p', 
+                        { opacity: 0, y: 50 }, 
+                        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 1 }
+                    );
+                }
+            });
         });
 
-        // bring hovered item to front
-        el.addEventListener('mouseenter', () => { el.style.zIndex = 60; });
-        el.addEventListener('mouseleave', () => { el.style.zIndex = ''; });
-      });
+        // Navigation Bar Animation
+        gsap.from('nav', { y: -100, opacity: 0, duration: 1, delay: 0.3 });
 
-      // small parallax by translating Y of images based on index
-      gsap.utils.toArray('.carousel-item').forEach((el, idx) => {
-        const sign = idx % 2 === 0 ? 1 : -1;
-        gsap.to(el, {
-          y: sign * 18,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '#events',
-            start: 'top top',
-            end: () => "+=" + (totalWidth + window.innerHeight * 0.6),
-            scrub: 0.6
-          }
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            gsap.fromTo(mobileMenu, { x: '100%' }, { x: 0, duration: 0.5 });
         });
-      });
 
-      // refresh to apply dimensions correctly
-      ScrollTrigger.refresh();
-    }
+        // Section Scroll Animations (Fade-in, Slide-up, Skew)
+        const sections = ['#about', '#events', '#gallery', '#team', '#contact', '#testimonials', 'footer'];
+        sections.forEach((section) => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 100,
+                skewY: 5,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
 
-    // Hover reveal overlay animation (GSAP)
-function initHoverOverlays(){
-  document.querySelectorAll('.carousel-item').forEach(item => {
-    const overlay = item.querySelector('.overlay');
-    const content = item.querySelector('.overlay-content');
-    const tl = gsap.timeline({ paused: true });
-    
-    tl.to(overlay, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0);
-    tl.to(content, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
-    
-    item.addEventListener('mouseenter', () => tl.play());
-    item.addEventListener('mouseleave', () => tl.reverse());
-    // mobile fallback: tap to toggle
-    item.addEventListener('touchstart', () => tl.reversed() ? tl.play() : tl.reverse());
-  });
-}
+        // Horizontal Events Carousel
+        gsap.to('.events-container', {
+            x: () => -(document.querySelector('.events-container').offsetWidth - window.innerWidth),
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '#events',
+                pin: true,
+                scrub: 1,
+                end: () => '+=' + (document.querySelector('.events-container').offsetWidth - window.innerWidth)
+            }
+        });
 
+        // Parallax Layers (About Section)
+        gsap.utils.toArray('.parallax-layer').forEach(layer => {
+            gsap.to(layer, {
+                y: '20%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: layer.parentElement,
+                    scrub: true
+                }
+            });
+        });
 
-    // small accessibility: anchor smooth scrolling offset for fixed header
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const href = a.getAttribute('href');
-        if (href.length > 1){
-          e.preventDefault();
-          const target = document.querySelector(href);
-          if (!target) return;
-          const offset = 80;
-          const top = target.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top, behavior: 'smooth' });
+        // Events Parallax
+        gsap.utils.toArray('.event-item img').forEach(img => {
+            gsap.to(img, {
+                y: '10%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    scrub: true
+                }
+            });
+        });
+
+        // Floating Particles
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 10 + 5}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            document.getElementById('particles').appendChild(particle);
         }
-      });
-    });
 
-    // Initialize everything once DOM is ready
-    window.addEventListener('load', () => {
-      initTextReveals();
-      initFadeUps();
-      initCarousel();
-      initHoverOverlays();
-    });
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+        document.querySelectorAll('a, button, .event-item, .team-card, #lightgallery a').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('enlarge'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('enlarge'));
+        });
 
-    // Recompute on resize for responsiveness
-    window.addEventListener('resize', () => {
-      ScrollTrigger.refresh();
-    });
-  </script>
+        // Contact Form Animations and Validation
+        const inputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input.nextElementSibling, { top: '-1.5rem', fontSize: '0.9rem', duration: 0.3 });
+            });
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    gsap.to(input.nextElementSibling, { top: '1rem', fontSize: '1rem', duration: 0.3 });
+                }
+            });
+        });
+
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = 'Message sent successfully!';
+            formMessage.classList.remove('hidden');
+            gsap.fromTo(formMessage, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
+            setTimeout(() => {
+                formMessage.classList.add('hidden');
+                document.getElementById('contact-form').reset();
+                inputs.forEach(input => {
+                    gsap.to(input.nextElementSibling, { top: '1rem', fontSize: '1rem', duration: 0.3 });
+                });
+            }, 3000);
+        });
+
+        // LightGallery Initialization
+        lightGallery(document.getElementById('lightgallery'), {
+            thumbnail: true,
+            animateThumb: true,
+            showThumbByDefault: false,
+            zoom: true,
+            scale: 0.5,
+            speed: 500,
+            mode: 'lg-fade',
+            addClass: 'lg-custom'
+        });
+
+        // Tilt Effect for Team Cards and Gallery Images
+        VanillaTilt.init(document.querySelectorAll('.team-card, #lightgallery a'), {
+            max: 10,
+            speed: 400,
+            glare: true,
+            'max-glare': 0.2
+        });
+
+        // Button Hover Glow
+        document.querySelectorAll('button, .team-card, #lightgallery a').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(el, { boxShadow: '0 0 20px rgba(79, 70, 229, 0.5)', scale: 1.05, duration: 0.3 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(el, { boxShadow: 'none', scale: 1, duration: 0.3 });
+            });
+        });
+
+        // Scroll Progress Indicator
+        gsap.to('#scroll-progress', {
+            width: '100%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: document.body,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true
+            }
+        });
+
+        // Testimonials Carousel
+        gsap.to('.testimonials-carousel', {
+            x: '-100%',
+            repeat: -1,
+            duration: 20,
+            ease: 'linear',
+            modifiers: {
+                x: gsap.utils.unitize(x => parseFloat(x) % (document.querySelector('.testimonials-carousel').offsetWidth))
+            }
+        });
+
+        // Gallery Animations
+        gsap.utils.toArray('#lightgallery .gallery-item').forEach((item, index) => {
+            gsap.from(item, {
+                opacity: 0,
+                y: 100,
+                scale: 0.8,
+                rotation: index % 2 === 0 ? -5 : 5,
+                duration: 1,
+                delay: index * 0.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // Gallery Parallax
+        gsap.utils.toArray('#lightgallery .gallery-item img').forEach(img => {
+            gsap.to(img, {
+                y: '15%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    scrub: true
+                }
+            });
+        });
+    </script>
 </body>
 </html>
