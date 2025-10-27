@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Events — Scroll Carousel Demo</title>
+
+  <!-- Tailwind quick CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP core + plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <!-- SplitType for elegant text reveals -->
+  <script src="https://unpkg.com/split-type"></script>
+
+  <style>
+    :root{
+      --accent: #60a5fa;
+      --muted: #6b7280;
+    }
+    html,body{height:100%}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #fbfbfd;
+      color: #0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Global helpers */
+    section { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:4rem 1.25rem; }
+    .container { max-width:1200px; width:100%; margin:0 auto; }
+
+    /* Hero / simple */
+    .hero-title { font-weight:800; line-height:0.95; font-size:clamp(2.2rem, 6vw, 4rem); }
+    .btn { transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s ease; }
+    .btn:hover{ transform:translateY(-4px); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
+
+    /* Carousel specific */
+    #events { position:relative; padding:0; height:100vh; overflow:hidden; background:linear-gradient(180deg,#fbfbfd,#f6f9ff); }
+    #events .section-title { position:absolute; top:40px; left:50%; transform:translateX(-50%); z-index:30; text-align:center; }
+    #carousel-wrapper{ position:relative; width:100%; height:100%; overflow:hidden; }
+    #carousel{ position:absolute; top:50%; left:0; transform:translateY(-50%); display:flex; align-items:center; gap: clamp(20px, 4vw, 48px); will-change: transform; padding: 0 8vw; }
+    .carousel-item { position:relative; border-radius:18px; overflow:hidden; box-shadow: 0 14px 40px rgba(16,24,40,0.08); flex-shrink:0; display:block; cursor:pointer; }
+    .carousel-item img{ display:block; width:100%; height:100%; object-fit:cover; vertical-align:middle; }
+
+    /* Overlay for hover effect */
+.carousel-item .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 100%);
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1.4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.carousel-item .overlay-content {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.3s ease;
+}
+
+.carousel-item .overlay h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.carousel-item .overlay p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.85);
+}
+
+
+    /* We will set width/height/top via inline styles or data attributes for variety */
+    .carousel-item .meta { position:absolute; left:18px; bottom:14px; color: #fff; text-shadow:0 6px 18px rgba(2,6,23,.45); font-weight:600; font-size:0.95rem; }
+
+    /* subtle hover */
+    .carousel-item:hover{ transform: translateY(-6px) scale(1.02); transition: transform .35s cubic-bezier(.2,.9,.3,1); z-index:50; }
+
+    /* other sections */
+    .simple-card{ background:#fff; border-radius:14px; padding:1.6rem; box-shadow: 0 8px 30px rgba(16,24,40,.04); }
+
+    /* responsive */
+    @media (max-width:768px){
+      #carousel{ padding: 0 6vw; gap:18px; }
+      .carousel-item { border-radius:12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="fixed top-0 left-0 w-full z-50">
+    <div class="container flex items-center justify-between py-4 px-4">
+      <div class="font-bold text-xl">LOGO</div>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-700">
+        <a href="#about" class="hover:text-black">About</a>
+        <a href="#events" class="hover:text-black">Events</a>
+        <a href="#gallery" class="hover:text-black">Gallery</a>
+        <a href="#team" class="hover:text-black">Team</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="hero" class="bg-white pt-24">
+      <div class="container text-center">
+        <h1 class="hero-title reveal-text">Welcome to Our Event</h1>
+        <p class="mt-6 text-slate-600 max-w-2xl mx-auto reveal-text">We create moments for builders, thinkers and makers — events filled with energy, craft and collaboration.</p>
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <a href="#events" class="btn px-6 py-3 rounded-full bg-[var(--accent)] text-white">See Events</a>
+          <a href="#about" class="btn px-5 py-3 rounded-full border">About</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT (keeps simple) -->
+    <section id="about">
+      <div class="container text-center">
+        <div class="simple-card mx-auto max-w-3xl">
+          <h2 class="text-2xl font-semibold mb-3 reveal-text">About Us</h2>
+          <p class="text-slate-600 reveal-text">We run hackathons, sprints and showcases that focus on building and learning. Join our community to collaborate and grow.</p>
+        </div>
+      </div>
+    </section>
+
+<!-- EVENTS: full-screen, pinned horizontal staggered carousel -->
+<section id="events" aria-label="Events">
+  <div class="section-title">
+    <h3 class="text-xl font-semibold reveal-text">Our Events</h3>
+    <p class="text-slate-600 reveal-text">Scroll to explore — hover to know more</p>
+  </div>
+
+  <div id="carousel-wrapper">
+    <div id="carousel" role="list">
+      
+      <a class="carousel-item group" role="listitem" href="#" 
+         data-w="42vw" data-h="78%" data-top="0" aria-label="Event 1">
+        <img loading="lazy" src="images/farewell.jpg" alt="FareWell Image">
+        <div class="meta">FAREWELL</div>
+        <div class="overlay">
+          <div class="overlay-content">
+            <h4>Farewell 2024</h4>
+            <p>A thrilling event filled with innovation and adrenaline on the track.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="carousel-item group" role="listitem" href="#" 
+         data-w="36vw" data-h="66%" data-top="28" aria-label="Event 2">
+        <img loading="lazy" src="images/event2.jpg" alt="Event 2 image">
+        <div class="meta">MONACO, 2023</div>
+        <div class="overlay">
+          <div class="overlay-content">
+            <h4>Monaco 2023</h4>
+            <p>An unforgettable moment by the sea — elegance meets performance.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="carousel-item group" role="listitem" href="#" 
+         data-w="46vw" data-h="84%" data-top="-36" aria-label="Event 3">
+        <img loading="lazy" src="images/event3.jpg" alt="Event 3 image">
+        <div class="meta">BRITAIN, 2025</div>
+        <div class="overlay">
+          <div class="overlay-content">
+            <h4>Britain 2025</h4>
+            <p>Where history and innovation collide to create magic on track.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="carousel-item group" role="listitem" href="#" 
+         data-w="34vw" data-h="70%" data-top="44" aria-label="Event 4">
+        <img loading="lazy" src="images/event4.jpg" alt="Event 4 image">
+        <div class="meta">FIA PRIZE GIVING</div>
+        <div class="overlay">
+          <div class="overlay-content">
+            <h4>FIA Awards Night</h4>
+            <p>Celebrating excellence and dedication in motorsport achievements.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="carousel-item group" role="listitem" href="#" 
+         data-w="40vw" data-h="76%" data-top="-18" aria-label="Event 5">
+        <img loading="lazy" src="images/event5.jpg" alt="Event 5 image">
+        <div class="meta">CLOSING NIGHT</div>
+        <div class="overlay">
+          <div class="overlay-content">
+            <h4>Closing Night</h4>
+            <p>A night to remember — stories, lights, and celebration of success.</p>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- GALLERY -->
+    <section id="gallery">
+      <div class="container text-center">
+        <h3 class="text-2xl font-semibold reveal-text">Gallery</h3>
+        <p class="text-slate-600 reveal-text">A few moments from our events</p>
+
+        <div class="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <img src="images/gallery1.jpg" loading="lazy" alt="gallery 1" class="rounded-xl shadow" />
+          <img src="images/gallery2.jpg" loading="lazy" alt="gallery 2" class="rounded-xl shadow" />
+          <img src="images/gallery3.jpg" loading="lazy" alt="gallery 3" class="rounded-xl shadow" />
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="bg-white">
+      <div class="container text-center">
+        <h3 class="text-2xl font-semibold reveal-text">Team</h3>
+        <p class="text-slate-600 reveal-text">Meet our organizers</p>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="simple-card text-center">
+            <img src="images/team1.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
+            <div class="font-semibold">Aarav Sharma</div>
+            <div class="text-sm text-slate-500">Lead Organizer</div>
+          </div>
+          <div class="simple-card text-center">
+            <img src="images/team2.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
+            <div class="font-semibold">Priya Verma</div>
+            <div class="text-sm text-slate-500">Design Head</div>
+          </div>
+          <div class="simple-card text-center">
+            <img src="images/team3.jpg" loading="lazy" alt="" class="w-24 h-24 rounded-full mx-auto mb-3 object-cover">
+            <div class="font-semibold">Rohan Gupta</div>
+            <div class="text-sm text-slate-500">Tech Lead</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-8 text-center text-sm text-slate-500">
+      © 2025 Your Organization. All rights reserved.
+    </footer>
+
+  </main>
+
+  <!-- ---------- Scripts (animations) ---------- -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    // Utility: reveal text using SplitType
+    function initTextReveals(){
+      document.querySelectorAll('.reveal-text').forEach(el => {
+        // avoid re-splitting if already split
+        if (!el.dataset.split) {
+          const split = new SplitType(el, { types: 'lines, words' });
+          el.dataset.split = '1';
+          gsap.from(split.lines, {
+            yPercent: 100, opacity: 0, stagger: 0.08, duration: 0.95, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+          });
+        }
+      });
+    }
+
+    // Fade-up generic elements
+    function initFadeUps(){
+      gsap.utils.toArray('.simple-card, #gallery img, .hero-title, .btn').forEach(el => {
+        gsap.fromTo(el, { y: 30, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+        });
+      });
+    }
+
+    // Carousel: compute sizes and apply initial inline styles from data attributes
+    function setupCarouselItems(){
+      const items = document.querySelectorAll('.carousel-item');
+      items.forEach(it => {
+        const w = it.dataset.w || '40vw';
+        const h = it.dataset.h || '76%';
+        const top = it.dataset.top || '0'; // px
+        it.style.width = w;
+        it.style.height = h;
+        it.style.top = (top + 'px');
+        // allow absolute overlap by making parent relative; position items relative and allow translate on hover
+        it.style.position = 'relative';
+        it.style.transition = 'transform .35s cubic-bezier(.2,.9,.3,1), z-index .1s';
+      });
+    }
+
+    // Main carousel scroll-driven animation
+    function initCarousel(){
+      const carousel = document.getElementById('carousel');
+      const wrapper = document.getElementById('carousel-wrapper');
+
+      // ensure layout updated
+      setupCarouselItems();
+      // compute full scroll width
+      let totalWidth = Math.max(0, carousel.scrollWidth - wrapper.clientWidth);
+
+      // For dynamic content or resizes, refresh
+      ScrollTrigger.addEventListener('refreshInit', () => {
+        totalWidth = Math.max(0, carousel.scrollWidth - wrapper.clientWidth);
+      });
+
+      // main horizontal move: pin the #events section and move carousel by -totalWidth
+      gsap.to(carousel, {
+        x: () => `-${totalWidth}px`,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#events',
+          start: 'top top',
+          end: () => "+=" + (totalWidth + window.innerHeight * 0.6), // extended so scroll feels smooth
+          scrub: 1,
+          pin: true,
+          anticipatePin: 0.5,
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Depth effect: scale/rotate slightly depending on relative progress
+      const items = gsap.utils.toArray('.carousel-item');
+      items.forEach((el, i) => {
+        // we animate scale and slight rotate (more subtle)
+        gsap.to(el, {
+          scale: 1.02,
+          rotation: (i % 2 === 0) ? 0.3 : -0.3,
+          ease: 'sine.out',
+          scrollTrigger: {
+            trigger: '#events',
+            start: 'top top',
+            end: () => "+=" + (totalWidth + window.innerHeight * 0.6),
+            scrub: true
+          }
+        });
+
+        // bring hovered item to front
+        el.addEventListener('mouseenter', () => { el.style.zIndex = 60; });
+        el.addEventListener('mouseleave', () => { el.style.zIndex = ''; });
+      });
+
+      // small parallax by translating Y of images based on index
+      gsap.utils.toArray('.carousel-item').forEach((el, idx) => {
+        const sign = idx % 2 === 0 ? 1 : -1;
+        gsap.to(el, {
+          y: sign * 18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#events',
+            start: 'top top',
+            end: () => "+=" + (totalWidth + window.innerHeight * 0.6),
+            scrub: 0.6
+          }
+        });
+      });
+
+      // refresh to apply dimensions correctly
+      ScrollTrigger.refresh();
+    }
+
+    // Hover reveal overlay animation (GSAP)
+function initHoverOverlays(){
+  document.querySelectorAll('.carousel-item').forEach(item => {
+    const overlay = item.querySelector('.overlay');
+    const content = item.querySelector('.overlay-content');
+    const tl = gsap.timeline({ paused: true });
+    
+    tl.to(overlay, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0);
+    tl.to(content, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+    
+    item.addEventListener('mouseenter', () => tl.play());
+    item.addEventListener('mouseleave', () => tl.reverse());
+    // mobile fallback: tap to toggle
+    item.addEventListener('touchstart', () => tl.reversed() ? tl.play() : tl.reverse());
+  });
+}
+
+
+    // small accessibility: anchor smooth scrolling offset for fixed header
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href.length > 1){
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (!target) return;
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Initialize everything once DOM is ready
+    window.addEventListener('load', () => {
+      initTextReveals();
+      initFadeUps();
+      initCarousel();
+      initHoverOverlays();
+    });
+
+    // Recompute on resize for responsiveness
+    window.addEventListener('resize', () => {
+      ScrollTrigger.refresh();
+    });
+  </script>
+</body>
+</html>
